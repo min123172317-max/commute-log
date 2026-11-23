@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>출퇴근 기록기</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="출퇴근기록">
+<meta name="theme-color" content="#0b0f14">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAADkElEQVR42u3dMW4TURCA4U2UDiQUCS4CJWWERIM4AVdA9NT0KFfgBIgGCVGmhIukSMMBKEAI4U1Ye+et38z7/jJCxsr7PGMvtjm59+DhJM116lcgOASH4BAcgkNwCA7BITgEhwSH4BAcgkNwCA7BITgEh+CQ4BAcgkNwCA7BITgEh+AQHNKZX0Gifrx4vvvD+58+N/rrTnx5S1ITGyixVorI2OtPmhwDsWg0QkyOajICRwgc1WQE+oBDcIw0NqJuB46aMkJuDQ7BITjslMDbhENwCA7BITgEh+DQtPG7dVbeJhyCQ3DYLIG3Bkd3vXz2oRNncPTVxeW1taK2wyNkPcHR6dhY4yPqiYuPJvS+UD5+eXWs57MmR50VE34NzeTI9Dx0doq0+6ysD1JPg19ft1a8fIWjtIyvrx/BoS5kwGGhwGGhwCE4jA04yDiqDDgEh7EBx+TCBhwubMBhocChLmXAYaHAYaHAITiMDTjIgEPWirGRbGzAMbmwAYcLG3BYKHBYKHBYKHBYKHDI5DA2ioyNqdin7HfPZsszKCaj1OSYPZuLy+syTw+3r8KXtyw8/qaP13pjo8LkWH4qPUyRRDLS4zjgsFsQqbq5Eq+VkCNZ/1AuuVC8lN1016STkRhH7IkeTKT2S6GUa6XpkSx/iBdeKFknR+sHq0sjWSfHxsd2xyO+/NhIhuNYD+jd0x1BRqa1csRRP+yiOav9JqvAQz3gplKPjTRrZd+DWbMIRr6wkW+trJfx64cFTsvkiJex/RSpAbFrHC1kbECkzIg6HVOGRZN4crSW0W6KVALnDcamSKrJsfHYCJwixYR1h+O4Mvq8J9ZKd+dh13Q0OXp+pP73vpVk1AuOFDP8tjtZdcB0gSPXdv/n3hZePf7T4dFfknT9hNSLAjjIgIMMOMiAg4yha/tq5fG3N7s/PL96S8a4OGZN/Onm6bvDlCj9WrlbxqwSY2Mqf4V0OYuFi4aMIpPjYBm3jRAyiuBYI2PWBxmukHqeUR3H+rHx9/Agow6OKBnLX7/Iu88Fh6riiN0p7W5TJofgEByCQ3AIDsHxu+9P3offoRa3KZNDcCgLjtgtYKdUmxxRJ0qGtaLBcKx/0BsblSfHmtMlYxrky1v2+jd3LMZ6zrH8vMkY+mufZqcIE3DIWhEcgkOCQ3AIDsEhOASH4BAcgkNwSHAIDsEhOASH4BAcgkNwCA7BIcEhOBTST+X1YneZTIeJAAAAAElFTkSuQmCC">
+<style>
+:root{--bg:#0b0f14;--card:#151b23;--line:#243040;--tx:#e8eef5;--sub:#8fa1b5;--ac:#4ea1ff;--ok:#3ddc84;--warn:#ffb84d;--bad:#ff5c5c}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",system-ui,sans-serif}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.wrap{max-width:560px;margin:0 auto;padding:12px 14px 48px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+h1{font-size:18px;margin:0}
+h2{font-size:15px;margin:18px 0 8px;color:var(--sub);font-weight:600}
+.pill{font-size:12px;padding:4px 10px;border-radius:999px;background:#222c39;color:var(--sub);white-space:nowrap}
+.pill.ok{background:#12351f;color:var(--ok)}.pill.warn{background:#3a2c10;color:var(--warn)}.pill.bad{background:#3d1717;color:var(--bad)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.seg{display:flex;background:#0f151c;border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px;margin:6px 0 10px}
+.seg button{flex:1;border:0;background:transparent;color:var(--sub);font-size:17px;padding:12px 0;border-radius:9px;font-weight:600}
+.seg button.on{background:var(--ac);color:#04121f}
+.btn{display:block;width:100%;border:1px solid var(--line);background:#1d2733;color:var(--tx);font-size:16px;font-weight:600;padding:14px;border-radius:14px;margin-top:8px;text-align:center;text-decoration:none}
+.btn.primary{background:var(--ok);color:#04210f;border:0;font-size:20px;padding:20px}
+.btn.danger{background:#4a1c1c;border-color:#6b2a2a;color:#ffb3b3}
+.btn.small{font-size:14px;padding:10px;margin-top:6px}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.route{font-size:15px;color:var(--sub);margin:2px 0 4px}
+.note{font-size:13px;color:var(--sub);margin:8px 2px 0}
+.warnbox{background:#3a2c10;border:1px solid #5a4416;color:#ffd99a;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.grid{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+.grid3{grid-template-columns:1fr 1fr 1fr}
+.kv{background:#0f151c;border:1px solid var(--line);border-radius:12px;padding:10px}
+.kv .k{font-size:12px;color:var(--sub)}
+.kv .v{font-size:20px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
+.kv .v small{font-size:12px;color:var(--sub);font-weight:500}
+.speed{font-size:76px;font-weight:800;text-align:center;line-height:1;font-variant-numeric:tabular-nums;margin:6px 0 2px}
+.speed small{font-size:18px;color:var(--sub);font-weight:600}
+.state{text-align:center;font-size:20px;font-weight:700;margin-bottom:10px}
+.state.stop{color:var(--bad)}.state.go{color:var(--ok)}.state.wait{color:var(--sub)}
+label{display:block;font-size:13px;color:var(--sub);margin:10px 0 4px}
+input[type=text]{width:100%;background:#0f151c;border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:12px;font-size:16px}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+td:not(:first-child),th:not(:first-child){white-space:nowrap}
+th{color:var(--sub);font-weight:600;font-size:12px}
+.bar{height:4px;background:var(--ac);border-radius:2px;margin-top:3px;opacity:.8}
+.trip{display:flex;justify-content:space-between;gap:8px;padding:12px 4px;border-bottom:1px solid var(--line)}
+.trip:active{background:#1a2330}
+.trip .a{font-weight:600}.trip .b{font-size:13px;color:var(--sub)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:8px;background:#1d2b3d;color:#9fc8ff;margin-left:6px}
+svg.route{width:100%;height:auto;background:#0f151c;border:1px solid var(--line);border-radius:12px}
+details{margin-top:10px}summary{color:var(--sub);font-size:14px;padding:6px 0}
+.muted{color:var(--sub)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#2a3647;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:9;max-width:90vw;display:none;text-align:center}
+a{color:var(--ac)}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1 id="title">출퇴근 기록기</h1>
+  <span class="pill" id="gpsPill">GPS 대기</span>
+</header>
+
+<!-- 홈 -->
+<section id="v-home">
+  <div id="recoverBox"></div>
+  <div class="card">
+    <div class="seg" id="segDir"><button data-v="out">출근</button><button data-v="in">퇴근</button></div>
+    <div class="seg" id="segRoute"><button data-v="A" id="btnA">경로 A</button><button data-v="B" id="btnB">경로 B</button></div>
+    <div class="route" id="routeText"></div>
+    <button class="btn primary" id="btnStart">기록 시작</button>
+    <div class="note">주차장에서 출발 전에 눌러 두세요. 실제 출발·도착 시각은 움직임을 보고 자동으로 잘라 계산합니다. 운전 중에는 화면을 만지지 마세요.</div>
+  </div>
+  <div class="row">
+    <button class="btn" id="btnList">기록·통계</button>
+    <button class="btn" id="btnSet">설정</button>
+  </div>
+  <button class="btn small" id="btnProbe">위치 권한·GPS 확인</button>
+  <div class="note" id="probeOut"></div>
+</section>
+
+<!-- 기록 중 -->
+<section id="v-rec" class="hide">
+  <div class="card">
+    <div class="state wait" id="r-state">출발 대기</div>
+    <div class="speed"><span id="r-speed">--</span> <small>km/h</small></div>
+    <div class="grid" style="margin-top:12px">
+      <div class="kv"><div class="k">기록 경과</div><div class="v" id="r-el">0:00</div></div>
+      <div class="kv"><div class="k">이동거리</div><div class="v" id="r-dist">0.0 <small>km</small></div></div>
+      <div class="kv"><div class="k">정차 횟수</div><div class="v" id="r-stops">0</div></div>
+      <div class="kv"><div class="k">총 정차</div><div class="v" id="r-stopsec">0초</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="grid3">
+      <div class="kv"><div class="k">GPS 정확도</div><div class="v" id="r-acc">--</div></div>
+      <div class="kv"><div class="k">마지막 수신</div><div class="v" id="r-last">--</div></div>
+      <div class="kv"><div class="k">기록 점</div><div class="v" id="r-pts">0</div></div>
+    </div>
+    <div class="note" id="r-wake">화면 유지: 확인 중</div>
+  </div>
+  <button class="btn danger" id="btnStop">기록 종료 (주차 후 누르세요)</button>
+</section>
+
+<!-- 결과 -->
+<section id="v-result" class="hide">
+  <div id="resultBody"></div>
+  <button class="btn" id="btnResHome">홈으로</button>
+  <button class="btn danger small hide" id="btnResDel">이 기록 삭제</button>
+</section>
+
+<!-- 목록·통계 -->
+<section id="v-list" class="hide">
+  <div class="seg" id="segStat"><button data-v="out">출근 통계</button><button data-v="in">퇴근 통계</button></div>
+  <div id="statBody"></div>
+  <h2>기록 목록</h2>
+  <div class="card" id="tripList" style="padding:4px 10px"></div>
+  <button class="btn" id="btnListHome">홈으로</button>
+</section>
+
+<!-- 설정 -->
+<section id="v-set" class="hide">
+  <div class="card">
+    <div class="note" style="margin-top:0">장소 이름은 이 폰 안에만 저장됩니다(웹 주소의 코드에는 올라가지 않음).</div>
+    <label>출발지 이름 (출근 때 출발하는 곳)</label>
+    <input type="text" id="setFrom" placeholder="예: 집 근처 공원">
+    <label>도착지 이름 (출근 때 도착하는 곳)</label>
+    <input type="text" id="setTo" placeholder="예: 직장">
+    <label>경로 A 이름</label>
+    <input type="text" id="setA" placeholder="예: 고속도로 경유">
+    <label>경로 B 이름</label>
+    <input type="text" id="setB" placeholder="예: 국도 경유">
+    <button class="btn" id="btnSaveSet">저장</button>
+  </div>
+  <h2>기록 백업</h2>
+  <div class="card">
+    <button class="btn small" id="btnExport" style="margin-top:0">기록 내보내기 (JSON 파일)</button>
+    <button class="btn small" id="btnImportBtn">기록 가져오기</button>
+    <input type="file" id="fileImport" accept=".json,application/json" class="hide">
+    <button class="btn small danger" id="btnWipe">모든 기록 삭제</button>
+    <div class="note">웹앱 저장소는 iOS가 정리할 수 있어요. 기록이 쌓이면 가끔 내보내기로 백업해 두세요.</div>
+  </div>
+  <button class="btn" id="btnSetHome">홈으로</button>
+</section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* ===== 유틸 ===== */
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2,'0');
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DAYS = ['일','월','화','수','목','금','토'];
+function fmtDur(s){s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h?`${h}시간 ${m}분`:m?`${m}분 ${x}초`:`${x}초`}
+function fmtClock(s){s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h?`${h}:${pad(m)}:${pad(x)}`:`${m}:${pad(x)}`}
+function fmtTime(t){const d=new Date(t);return `${pad(d.getHours())}:${pad(d.getMinutes())}`}
+function fmtDate(t){const d=new Date(t);return `${d.getMonth()+1}/${d.getDate()}(${DAYS[d.getDay()]})`}
+function median(a){if(!a.length)return null;const b=[...a].sort((x,y)=>x-y),m=b.length>>1;return b.length%2?b[m]:(b[m-1]+b[m])/2}
+function pctile(a,p){if(!a.length)return null;const b=[...a].sort((x,y)=>x-y);return b[Math.min(b.length-1,Math.ceil(p*b.length)-1)]}
+function mean(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:null}
+function hav(a,b,c,d){const R=6371000,r=Math.PI/180,dl=(c-a)*r,dg=(d-b)*r;const x=Math.sin(dl/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(dg/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+let toastTimer=null;
+function toast(msg,ms=3500){const t=$('#toast');t.textContent=msg;t.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display='none',ms)}
+
+/* ===== 저장소(IndexedDB) ===== */
+const DB={_d:null,
+  open(){return new Promise((res,rej)=>{if(this._d)return res(this._d);const r=indexedDB.open('commute-log',1);r.onupgradeneeded=()=>r.result.createObjectStore('trips',{keyPath:'id'});r.onsuccess=()=>{this._d=r.result;res(r.result)};r.onerror=()=>rej(r.error)})},
+  async tx(mode,fn){const d=await this.open();return new Promise((res,rej)=>{const t=d.transaction('trips',mode);const r=fn(t.objectStore('trips'));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})},
+  put(o){return this.tx('readwrite',s=>s.put(o))},
+  del(id){return this.tx('readwrite',s=>s.delete(id))},
+  all(){return this.tx('readonly',s=>s.getAll())},
+  clear(){return this.tx('readwrite',s=>s.clear())}
+};
+
+/* ===== 설정 ===== */
+const SKEY='commute-log-settings-v1';
+let settings={from:'출발지',to:'도착지',nameA:'경로 A',nameB:'경로 B',dir:'out',route:'A'};
+try{Object.assign(settings,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
+function saveSettings(){try{localStorage.setItem(SKEY,JSON.stringify(settings))}catch(e){}}
+const dirLabel=d=>d==='out'?'출근':'퇴근';
+const routeName=r=>r==='A'?settings.nameA:settings.nameB;
+function routeText(d){return d==='out'?`${settings.from} → ${settings.to}`:`${settings.to} → ${settings.from}`}
+
+/* ===== 분석(순수 함수) =====
+   pts: [시각ms, 위도, 경도, 정확도m, 속도m/s|null]
+   live=true: 진행 중 화면용(끝까지 분석), false: 종료 후(첫 움직임~마지막 움직임만 사용) */
+function analyze(pts, live){
+  const n=pts.length;
+  const r={n,gaps:0,maxGap:0,tripStart:null,tripEnd:null,durSec:0,distM:0,stops:[],stopSec:0,moveSec:0,avgKmh:0,curKmh:null,lastAcc:null,active:null,moved:false};
+  if(!n) return r;
+  const v=new Array(n).fill(null);
+  let prevU=-1;
+  const accOk=p=>p[3]==null||p[3]<=50;
+  for(let i=0;i<n;i++){
+    const p=pts[i];
+    if(i>0){const dt=(p[0]-pts[i-1][0])/1000; if(dt>5)r.gaps++; if(dt>r.maxGap)r.maxGap=dt;}
+    let s=null;
+    if(p[4]!=null&&p[4]>=0) s=p[4]*3.6;
+    else if(accOk(p)&&prevU>=0){const q=pts[prevU],dt=(p[0]-q[0])/1000; if(dt>0&&dt<=15) s=hav(q[1],q[2],p[1],p[2])/dt*3.6;}
+    if(accOk(p)) prevU=i;
+    v[i]=s;
+  }
+  r.curKmh=v[n-1]; r.lastAcc=pts[n-1][3];
+  let s0=-1,e0=-1;
+  for(let i=0;i<n;i++){ if(v[i]!=null&&v[i]>=7&&(i===n-1||v[i+1]==null||v[i+1]>=5)){s0=i;break} }
+  if(s0<0) return r;
+  for(let i=n-1;i>=0;i--){ if(v[i]!=null&&v[i]>=7&&(i===0||v[i-1]==null||v[i-1]>=5)){e0=i;break} }
+  if(e0<s0) e0=s0;
+  const e=live?n-1:e0;
+  r.moved=true; r.tripStart=pts[s0][0]; r.tripEnd=pts[e][0];
+  // 정차: 3km/h 미만이 5초 이상 이어지면 정차, 6km/h 이상이 되면 끝
+  let cand=-1,act=null;
+  for(let i=s0;i<=e;i++){
+    const sp=v[i]; if(sp==null) continue;
+    if(act){
+      if(sp>=6){const t1=pts[i][0];r.stops.push({t0:act.t0,t1,dur:(t1-act.t0)/1000,la:act.la,lo:act.lo});act=null}
+    }else if(sp<3){
+      if(cand<0) cand=i;
+      else if(pts[i][0]-pts[cand][0]>=5000){act={t0:pts[cand][0],la:pts[cand][1],lo:pts[cand][2]};cand=-1}
+    }else cand=-1;
+  }
+  if(act){ // 진행 중인 정차(실시간 화면)
+    const t1=pts[n-1][0]; r.active={t0:act.t0,dur:(t1-act.t0)/1000};
+    r.stops.push({t0:act.t0,t1,dur:r.active.dur,la:act.la,lo:act.lo,ongoing:true});
+  }
+  // 거리: 위치가 실제로 움직인 구간만(정차 중 GPS 떨림 제외)
+  let lu=-1;
+  for(let i=s0;i<=e;i++){
+    if(!accOk(pts[i])) continue;
+    if(lu>=0){const q=pts[lu],p=pts[i],dt=(p[0]-q[0])/1000,d=hav(q[1],q[2],p[1],p[2]);
+      if(dt>0&&d/dt*3.6>=3) r.distM+=d;}
+    lu=i;
+  }
+  r.durSec=(r.tripEnd-r.tripStart)/1000;
+  r.stopSec=r.stops.reduce((a,s)=>a+s.dur,0);
+  r.moveSec=Math.max(0,r.durSec-r.stopSec);
+  r.avgKmh=r.moveSec>0?(r.distM/1000)/(r.moveSec/3600):0;
+  return r;
+}
+function visSummary(vis,endT){
+  let cnt=0,sec=0,h=null;
+  for(const [t,st] of (vis||[])){ if(st==='hidden'){cnt++;h=t} else if(h!=null){sec+=(t-h)/1000;h=null} }
+  if(h!=null&&endT) sec+=(endT-h)/1000;
+  return {cnt,sec};
+}
+
+/* ===== 화면 전환 ===== */
+const VIEWS=['home','rec','result','list','set'];
+function show(v){VIEWS.forEach(x=>$('#v-'+x).classList.toggle('hide',x!==v));window.scrollTo(0,0)}
+
+/* ===== GPS 표시 ===== */
+function setPill(text,cls){const p=$('#gpsPill');p.textContent=text;p.className='pill '+(cls||'')}
+function accClass(a){return a==null?'':a<=20?'ok':a<=50?'warn':'bad'}
+function geoErrText(e){
+  if(e.code===1)return '위치 권한이 꺼져 있어요. 설정 > 개인정보 보호 및 보안 > 위치 서비스 > Safari 웹사이트(또는 이 앱)에서 허용해 주세요.';
+  if(e.code===2)return '위치를 못 가져왔어요. 하늘이 보이는 곳에서 다시 시도해 보세요.';
+  return '위치 응답이 늦어요. 잠시 후 다시 시도해 주세요.';
+}
+
+/* ===== 홈 ===== */
+function renderHome(){
+  $('#segDir').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===settings.dir));
+  $('#segRoute').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===settings.route));
+  $('#btnA').textContent='A · '+settings.nameA; $('#btnB').textContent='B · '+settings.nameB;
+  $('#routeText').textContent=routeText(settings.dir);
+}
+$('#segDir').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.dir=b.dataset.v;saveSettings();renderHome()});
+$('#segRoute').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;settings.route=b.dataset.v;saveSettings();renderHome()});
+$('#btnProbe').addEventListener('click',()=>{
+  const out=$('#probeOut');
+  if(!navigator.geolocation){out.textContent='이 브라우저는 위치 기능을 지원하지 않아요.';return}
+  out.textContent='위치 확인 중…';
+  navigator.geolocation.getCurrentPosition(p=>{
+    const a=Math.round(p.coords.accuracy);setPill('GPS 정확도 '+a+'m',accClass(a));
+    out.textContent=`위치 OK · 정확도 약 ${a}m · 속도 정보 ${p.coords.speed==null?'없음(정지 중이면 정상)':'있음'}`;
+  },e=>{out.textContent=geoErrText(e);setPill('GPS 오류','bad')},{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+});
+$('#btnList').addEventListener('click',openList);
+$('#btnSet').addEventListener('click',openSet);
+$('#btnListHome').addEventListener('click',goHome);
+$('#btnSetHome').addEventListener('click',goHome);
+$('#btnResHome').addEventListener('click',goHome);
+function goHome(){show('home');renderHome();checkRecover();setPill('GPS 대기','')}
+
+/* ===== 기록 ===== */
+let rec=null,watchId=null,tickTimer=null,saveTimer=null,wake=null,wakeState='확인 중',lastFixAt=0,geoErr='';
+function onVis(){
+  if(!rec)return;
+  rec.vis.push([Date.now(),document.visibilityState]);
+  if(document.visibilityState==='visible'){lockScreen();tickHud()}else saveRec();
+}
+async function lockScreen(){
+  try{
+    if(!('wakeLock' in navigator)){wakeState='이 기기에서는 화면 유지 기능을 못 써요. 자동 잠금을 길게 바꿔 주세요.';updWake();return}
+    wake=await navigator.wakeLock.request('screen');
+    wakeState='화면 유지 켜짐';
+    wake.addEventListener('release',()=>{wakeState='화면 유지 꺼짐(앱을 다시 보면 자동 재시도)';updWake()});
+  }catch(e){wakeState='화면 유지 실패: 설정 > 디스플레이 > 자동 잠금을 길게 바꿔 주세요.'}
+  updWake();
+}
+function updWake(){const el=$('#r-wake');if(el)el.textContent=wakeState}
+async function saveRec(){if(!rec)return;try{await DB.put(rec)}catch(e){}}
+function onPos(pos){
+  if(!rec)return;
+  const c=pos.coords,t=pos.timestamp||Date.now();
+  const last=rec.pts[rec.pts.length-1];
+  if(last&&last[0]===t)return;
+  lastFixAt=Date.now();geoErr='';
+  const sp=(c.speed==null||isNaN(c.speed))?null:+c.speed.toFixed(2);
+  rec.pts.push([t,+c.latitude.toFixed(6),+c.longitude.toFixed(6),Math.round(c.accuracy),sp]);
+}
+function onErr(e){geoErr=geoErrText(e);if(e.code===1){toast(geoErr,6000)}}
+async function startRec(){
+  if(!navigator.geolocation){toast('이 브라우저는 위치 기능을 지원하지 않아요');return}
+  rec={id:'t'+Date.now(),dir:settings.dir,route:settings.route,nameA:settings.nameA,nameB:settings.nameB,startedAt:Date.now(),pts:[],vis:[],status:'recording',ua:navigator.userAgent.slice(0,140)};
+  try{await DB.put(rec)}catch(e){toast('이 폰에서 저장소를 쓸 수 없어요(사생활 보호 모드인지 확인)',6000)}
+  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+  lastFixAt=0;geoErr='';
+  watchId=navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,maximumAge:0,timeout:20000});
+  tickTimer=setInterval(tickHud,1000);
+  saveTimer=setInterval(saveRec,10000);
+  document.addEventListener('visibilitychange',onVis);
+  window.addEventListener('pagehide',saveRec);
+  show('rec');tickHud();lockScreen();
+}
+function tickHud(){
+  if(!rec)return;
+  const now=Date.now(),a=analyze(rec.pts,true);
+  $('#r-el').textContent=fmtClock((now-rec.startedAt)/1000);
+  const age=lastFixAt?(now-lastFixAt)/1000:null;
+  const stale=age==null||age>5;
+  $('#r-speed').textContent=(!stale&&a.curKmh!=null)?Math.round(a.curKmh):'--';
+  const st=$('#r-state');
+  if(!a.moved){st.textContent=lastFixAt?'출발 대기 (움직이면 자동으로 시작)':'GPS 신호 기다리는 중…';st.className='state wait'}
+  else if(a.active){st.textContent='정차 중 '+fmtDur(a.active.dur);st.className='state stop'}
+  else{st.textContent='주행 중';st.className='state go'}
+  $('#r-dist').innerHTML=(a.distM/1000).toFixed(1)+' <small>km</small>';
+  $('#r-stops').textContent=a.stops.length;
+  $('#r-stopsec').textContent=fmtDur(a.stopSec);
+  $('#r-acc').innerHTML=a.lastAcc==null?'--':a.lastAcc+'<small>m</small>';
+  $('#r-last').innerHTML=age==null?'--':Math.round(age)+'<small>초 전</small>';
+  $('#r-pts').textContent=a.n;
+  if(age==null) setPill(geoErr?'GPS 오류':'GPS 찾는 중','warn');
+  else if(age>10) setPill('GPS 끊김 '+Math.round(age)+'초','bad');
+  else setPill('GPS '+(a.lastAcc==null?'':a.lastAcc+'m'),accClass(a.lastAcc));
+  if(geoErr&&age==null) $('#r-state').textContent=geoErr;
+  updWake();
+}
+async function stopRec(auto){
+  if(!rec)return;
+  if(!auto&&!confirm('기록을 종료할까요?'))return;
+  navigator.geolocation.clearWatch(watchId);clearInterval(tickTimer);clearInterval(saveTimer);
+  document.removeEventListener('visibilitychange',onVis);window.removeEventListener('pagehide',saveRec);
+  try{wake&&wake.release()}catch(e){}
+  const t=rec;rec=null;
+  t.endedAt=Date.now();t.status='done';t.sum=analyze(t.pts,false);t.vs=visSummary(t.vis,t.endedAt);
+  try{await DB.put(t)}catch(e){toast('저장에 실패했어요',5000)}
+  setPill('GPS 대기','');
+  openResult(t,false);
+}
+$('#btnStart').addEventListener('click',startRec);
+$('#btnStop').addEventListener('click',()=>stopRec(false));
+
+/* ===== 중단된 기록 복구 ===== */
+async function checkRecover(){
+  const box=$('#recoverBox');box.innerHTML='';
+  let all=[];try{all=await DB.all()}catch(e){return}
+  const orphans=all.filter(t=>t.status==='recording'&&(!rec||t.id!==rec.id));
+  if(!orphans.length)return;
+  const t=orphans[0];
+  box.innerHTML=`<div class="warnbox">끝맺지 못한 기록이 있어요 (${fmtDate(t.startedAt)} ${fmtTime(t.startedAt)} 시작, 점 ${t.pts.length}개). 앱이 중간에 닫힌 것일 수 있어요.<div class="row"><button class="btn small" id="rcGo">복구해서 보기</button><button class="btn small danger" id="rcDel">삭제</button></div></div>`;
+  $('#rcGo').onclick=async()=>{
+    t.endedAt=t.pts.length?t.pts[t.pts.length-1][0]:t.startedAt;t.status='done';t.recovered=true;
+    t.sum=analyze(t.pts,false);t.vs=visSummary(t.vis,t.endedAt);
+    await DB.put(t);openResult(t,true);
+  };
+  $('#rcDel').onclick=async()=>{if(confirm('삭제할까요?')){await DB.del(t.id);checkRecover()}};
+}
+
+/* ===== 결과 ===== */
+function routeSvg(t){
+  const s=t.sum;if(!s||!s.moved)return '';
+  const pts=t.pts.filter(p=>(p[3]==null||p[3]<=50)&&p[0]>=s.tripStart-10000&&p[0]<=s.tripEnd+10000);
+  if(pts.length<2)return '';
+  const la0=mean(pts.map(p=>p[1])),kx=Math.cos(la0*Math.PI/180);
+  const X=p=>p[2]*kx,Y=p=>-p[1];
+  let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;
+  pts.forEach(p=>{x0=Math.min(x0,X(p));x1=Math.max(x1,X(p));y0=Math.min(y0,Y(p));y1=Math.max(y1,Y(p))});
+  const W=320,H=240,P=16,w=Math.max(x1-x0,1e-6),h=Math.max(y1-y0,1e-6),sc=Math.min((W-2*P)/w,(H-2*P)/h);
+  const ox=(W-w*sc)/2,oy=(H-h*sc)/2;
+  const px=p=>(ox+(X(p)-x0)*sc).toFixed(1),py=p=>(oy+(Y(p)-y0)*sc).toFixed(1);
+  const line=pts.map(p=>px(p)+','+py(p)).join(' ');
+  let dots='';
+  s.stops.forEach(st=>{const q=[0,st.la,st.lo];const r=Math.min(10,3+st.dur/25);dots+=`<circle cx="${px(q)}" cy="${py(q)}" r="${r.toFixed(1)}" fill="#ff5c5c" fill-opacity=".55" stroke="#ff5c5c"/>`});
+  const a=pts[0],b=pts[pts.length-1];
+  return `<svg class="route" viewBox="0 0 ${W} ${H}"><polyline points="${line}" fill="none" stroke="#4ea1ff" stroke-width="2.5" stroke-linejoin="round"/>${dots}<circle cx="${px(a)}" cy="${py(a)}" r="6" fill="#3ddc84"/><circle cx="${px(b)}" cy="${py(b)}" r="6" fill="#fff"/></svg><div class="note">초록=출발 · 흰색=도착 · 빨강=정차(클수록 오래)</div>`;
+}
+function openResult(t,fromList){
+  const s=t.sum||analyze(t.pts,false),vs=t.vs||visSummary(t.vis,t.endedAt);
+  const lbl=t.dir==='out'?'출근':'퇴근',rn=t.route==='A'?(t.nameA||'경로 A'):(t.nameB||'경로 B');
+  let h=`<div class="card"><div style="font-weight:700;font-size:18px">${lbl} · ${esc(t.route)} <span class="muted" style="font-size:14px;font-weight:500">${esc(rn)}</span></div><div class="muted">${fmtDate(t.startedAt)}${t.recovered?' · 복구된 기록':''}</div></div>`;
+  if(!s.moved){
+    h+=`<div class="warnbox">이동이 감지되지 않았어요(기록 점 ${s.n}개). GPS가 안 잡혔거나 출발 전에 종료했을 수 있어요. 필요 없으면 아래에서 삭제하세요.</div>`;
+  }else{
+    h+=`<div class="card"><div class="grid">
+      <div class="kv"><div class="k">총 소요시간</div><div class="v">${fmtDur(s.durSec)}</div></div>
+      <div class="kv"><div class="k">이동거리</div><div class="v">${(s.distM/1000).toFixed(1)} <small>km</small></div></div>
+      <div class="kv"><div class="k">출발 → 도착</div><div class="v" style="font-size:17px">${fmtTime(s.tripStart)} → ${fmtTime(s.tripEnd)}</div></div>
+      <div class="kv"><div class="k">평균 주행속도</div><div class="v">${s.avgKmh.toFixed(0)} <small>km/h</small></div></div>
+      <div class="kv"><div class="k">정차 횟수</div><div class="v">${s.stops.length}<small>회</small></div></div>
+      <div class="kv"><div class="k">총 정차시간</div><div class="v">${fmtDur(s.stopSec)}</div></div>
+    </div><div class="note">주행시간(정차 제외) ${fmtDur(s.moveSec)} · 정차는 '속도가 거의 0인 상태가 5초 이상'이며 신호 대기인지 정체인지는 아직 구분하지 않아요.</div></div>`;
+    h+=`<div class="card">${routeSvg(t)}</div>`;
+    if(s.stops.length){
+      h+=`<h2>정차 목록</h2><div class="card" style="padding:4px 10px"><table><tr><th>#</th><th>출발 후</th><th>시간</th><th>위치</th></tr>`;
+      s.stops.forEach((st,i)=>{h+=`<tr><td>${i+1}</td><td>${fmtClock((st.t0-s.tripStart)/1000)}</td><td>${fmtDur(st.dur)}</td><td><a href="https://maps.apple.com/?ll=${st.la},${st.lo}&q=${encodeURIComponent('정차 '+(i+1))}" target="_blank" rel="noopener">지도</a></td></tr>`});
+      h+=`</table></div>`;
+    }
+  }
+  const acc=t.pts.map(p=>p[3]).filter(x=>x!=null);
+  const span=t.pts.length>1?(t.pts[t.pts.length-1][0]-t.pts[0][0])/1000:0;
+  h+=`<details><summary>GPS 품질·누락 점검 (테스트용)</summary><div class="card"><table>
+    <tr><td>기록 점 수</td><td>${s.n}개</td></tr>
+    <tr><td>평균 수신 간격</td><td>${s.n>1?(span/(s.n-1)).toFixed(1):'-'}초</td></tr>
+    <tr><td>5초 넘게 끊긴 횟수</td><td>${s.gaps}회</td></tr>
+    <tr><td>가장 길게 끊긴 시간</td><td>${fmtDur(s.maxGap)}</td></tr>
+    <tr><td>정확도 중앙값</td><td>${acc.length?median(acc)+'m':'-'}</td></tr>
+    <tr><td>정확도 나쁨(50m 초과) 점</td><td>${acc.filter(x=>x>50).length}개</td></tr>
+    <tr><td>화면 숨김(앱 전환·잠금) 횟수</td><td>${vs.cnt}회 / ${fmtDur(vs.sec)}</td></tr>
+    <tr><td>기록 시간 전체</td><td>${fmtDur((t.endedAt-t.startedAt)/1000)}</td></tr>
+  </table><div class="note">끊김·화면 숨김 숫자가 크면 그 구간은 기록이 비었다는 뜻이에요. 아이폰이 백그라운드 위치를 얼마나 허용하는지 이 숫자로 판단합니다.</div></div></details>`;
+  $('#resultBody').innerHTML=h;
+  const del=$('#btnResDel');del.classList.toggle('hide',!(fromList||!s.moved));
+  del.onclick=async()=>{if(confirm('이 기록을 삭제할까요?')){await DB.del(t.id);fromList?openList():goHome()}};
+  show('result');
+}
+
+/* ===== 목록·통계 ===== */
+let statDir=settings.dir;
+async function openList(){
+  show('list');
+  let all=[];try{all=await DB.all()}catch(e){toast('기록을 읽지 못했어요')}
+  const trips=all.filter(t=>t.status==='done').sort((a,b)=>b.startedAt-a.startedAt);
+  $('#segStat').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===statDir));
+  renderStats(trips);
+  const L=$('#tripList');
+  if(!trips.length){L.innerHTML='<div class="note" style="padding:12px">아직 기록이 없어요.</div>';return}
+  L.innerHTML=trips.map(t=>{const s=t.sum||{};return `<div class="trip" data-id="${esc(t.id)}"><div><div class="a">${fmtDate(t.startedAt)} ${s.moved?fmtTime(s.tripStart):fmtTime(t.startedAt)}<span class="tag">${dirLabel(t.dir)} ${esc(t.route)}</span></div><div class="b">${s.moved?`정차 ${s.stops.length}회 · ${(s.distM/1000).toFixed(1)}km`:'이동 감지 안 됨'}</div></div><div class="a">${s.moved?fmtDur(s.durSec):'-'}</div></div>`}).join('');
+  L.onclick=e=>{const r=e.target.closest('.trip');if(!r)return;const t=trips.find(x=>x.id===r.dataset.id);if(t)openResult(t,true)};
+}
+$('#segStat').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;statDir=b.dataset.v;openList()});
+function statRows(groups,sortFn){
+  const rows=Object.entries(groups).map(([k,ts])=>{
+    const d=ts.map(t=>t.sum.durSec);
+    return {k,n:ts.length,avg:mean(d),med:median(d),p80:ts.length>=5?pctile(d,.8):null,stopN:mean(ts.map(t=>t.sum.stops.length)),stopS:mean(ts.map(t=>t.sum.stopSec))};
+  });
+  rows.sort(sortFn||((a,b)=>a.k<b.k?-1:1));
+  const mx=Math.max(1,...rows.map(r=>r.avg||0));
+  return `<table><tr><th>구분</th><th>횟수</th><th>평균</th><th>중앙값</th><th>정차</th></tr>`+rows.map(r=>`<tr><td>${esc(r.k)}${r.n<5?' <span class="muted">*</span>':''}<div class="bar" style="width:${Math.round(r.avg/mx*100)}%"></div></td><td>${r.n}</td><td>${fmtDur(r.avg)}</td><td>${fmtDur(r.med)}</td><td>${r.stopN.toFixed(1)}회 · ${fmtDur(r.stopS)}</td></tr>`).join('')+`</table>`;
+}
+function renderStats(trips){
+  const ok=trips.filter(t=>t.dir===statDir&&t.sum&&t.sum.moved);
+  const B=$('#statBody');
+  if(!ok.length){B.innerHTML=`<div class="card"><div class="note" style="margin:0">${dirLabel(statDir)} 기록이 아직 없어요. 몇 번 쌓이면 여기에 평균·요일별·출발시간별 비교가 나옵니다.</div></div>`;return}
+  const by=(fn)=>{const g={};ok.forEach(t=>{(g[fn(t)]=g[fn(t)]||[]).push(t)});return g};
+  const rn=r=>r+' · '+routeName(r);
+  const byRoute=by(t=>rn(t.route));
+  const byDay=by(t=>DAYS[new Date(t.sum.tripStart).getDay()]+'요일');
+  const byBucket=by(t=>{const d=new Date(t.sum.tripStart),m=Math.floor((d.getHours()*60+d.getMinutes())/30)*30;return `${pad(Math.floor(m/60))}:${pad(m%60)}~${pad(Math.floor((m+30)/60)%24)}:${pad((m+30)%60)}`});
+  const order=DAYS.map(d=>d+'요일');
+  let h=`<div class="card"><div class="muted" style="font-size:13px;margin-bottom:6px">경로별 (${dirLabel(statDir)})</div>${statRows(byRoute)}</div>`;
+  h+=`<div class="card"><div class="muted" style="font-size:13px;margin-bottom:6px">요일별</div>${statRows(byDay,(a,b)=>order.indexOf(a.k)-order.indexOf(b.k))}</div>`;
+  h+=`<div class="card"><div class="muted" style="font-size:13px;margin-bottom:6px">출발 시간대별 (30분 단위)</div>${statRows(byBucket)}</div>`;
+  h+=`<div class="note">* 횟수 5회 미만은 참고용이에요. 평균보다 중앙값을 더 믿으세요. 추천 출발시간은 기록이 더 쌓인 뒤에 만듭니다.</div>`;
+  B.innerHTML=h;
+}
+
+/* ===== 설정·백업 ===== */
+function openSet(){
+  $('#setFrom').value=settings.from==='출발지'?'':settings.from;
+  $('#setTo').value=settings.to==='도착지'?'':settings.to;
+  $('#setA').value=settings.nameA==='경로 A'?'':settings.nameA;
+  $('#setB').value=settings.nameB==='경로 B'?'':settings.nameB;
+  show('set');
+}
+$('#btnSaveSet').addEventListener('click',()=>{
+  settings.from=$('#setFrom').value.trim()||'출발지';settings.to=$('#setTo').value.trim()||'도착지';
+  settings.nameA=$('#setA').value.trim()||'경로 A';settings.nameB=$('#setB').value.trim()||'경로 B';
+  saveSettings();toast('저장했어요');goHome();
+});
+$('#btnExport').addEventListener('click',async()=>{
+  const all=(await DB.all()).filter(t=>t.status==='done');
+  if(!all.length){toast('내보낼 기록이 없어요');return}
+  const json=JSON.stringify({app:'commute-log',version:1,exported:new Date().toISOString(),trips:all});
+  const d=new Date(),name=`commute-log-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}.json`;
+  const file=new File([json],name,{type:'application/json'});
+  try{
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return}
+  }catch(e){if(e&&e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([json],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();a.remove();
+  toast('파일로 저장했어요(파일 앱 > 다운로드)');
+});
+$('#btnImportBtn').addEventListener('click',()=>$('#fileImport').click());
+$('#fileImport').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{
+    const j=JSON.parse(await f.text());
+    if(j.app!=='commute-log'||!Array.isArray(j.trips))throw new Error('x');
+    for(const t of j.trips)await DB.put(t);
+    toast(j.trips.length+'개 기록을 가져왔어요');
+  }catch(err){toast('가져올 수 없는 파일이에요')}
+  e.target.value='';
+});
+$('#btnWipe').addEventListener('click',async()=>{
+  if(!confirm('모든 기록을 삭제할까요? 되돌릴 수 없어요.'))return;
+  if(!confirm('정말 삭제할까요? (백업은 내보내기로 먼저 하세요)'))return;
+  await DB.clear();toast('삭제했어요');
+});
+
+/* ===== 시작 ===== */
+renderHome();checkRecover();
+</script>
+</body>
+</html>
